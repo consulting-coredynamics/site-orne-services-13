@@ -927,7 +927,7 @@ Notre expertise repose sur une compréhension intime des cycles naturels. De la 
 <footer>
   <div class="foot-grid">
     <div>
-      <h3 class="serif">Orne Services</h3>
+      <h3 class="serif">{{ $json.nom_entreprise }}</h3>
       <p style="margin-top:6px; line-height: 1.5;">Votre artisan spécialiste en Paysagiste à Moutiers et ses alentours. Contactez-nous pour toute étude de projet.</p>
     </div>
     <div>
@@ -938,7 +938,7 @@ Notre expertise repose sur une compréhension intime des cycles naturels. De la 
     <div>
       <h3 class="serif">Contact Direct</h3>
       <div class="foot-contact-item">
-        📞 <a href="tel:03 82 20 29 95" onclick="trackCall('Footer')">03 82 20 29 95</a>
+        📞 <a href="tel:03 82 20 29 95" onclick="trackCall('Footer')">{{ $json.telephone }}</a>
       </div>
       <div class="foot-contact-item">✉️ contact@orne-services-paysagiste.fr</div>
     </div>
@@ -1057,11 +1057,11 @@ Notre expertise repose sur une compréhension intime des cycles naturels. De la 
     window.open(`https://wa.me/${telClient}?text=${text}`, '_blank');
   }
 
-  // 3. MOTEUR 3D CANVAS & GSAP (ZÉRO LATENCE AU CHARGEMENT)
+  // 3. MOTEUR 3D CANVAS & GSAP
   window.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const frameCount = parseInt("120", 10);
+    const frameCount = 96;
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const checkIsMobile = () => {
@@ -1160,7 +1160,10 @@ Notre expertise repose sur une compréhension intime des cycles naturels. De la 
       context.fillRect(0, zoneStart, canvas.width, canvas.height - zoneStart);
     }
 
-    function handleImageLoad() {
+    function handleImageLoad(index) {
+      if (index === 0) {
+        render();
+      }
       if (isFinished) return;
       loadedImagesCount++;
       const percent = Math.min(100, Math.round((loadedImagesCount / frameCount) * 100));
@@ -1185,8 +1188,8 @@ Notre expertise repose sur une compréhension intime des cycles naturels. De la 
     // Préchargement immédiat
     for (let i = 0; i < frameCount; i++) {
       const img = new Image();
-      img.onload = handleImageLoad;
-      img.onerror = handleImageLoad;
+      img.onload = () => handleImageLoad(i);
+      img.onerror = () => handleImageLoad(i);
       img.src = currentFrame(i);
       images.push(img);
     }
@@ -1222,7 +1225,6 @@ Notre expertise repose sur une compréhension intime des cycles naturels. De la 
         }
       });
       
-      // Affichage de la barre fixe mobile après le hero
       const stickyBar = document.getElementById('mobile-sticky-bar');
       if (stickyBar) {
         ScrollTrigger.create({
